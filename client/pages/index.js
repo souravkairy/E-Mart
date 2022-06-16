@@ -1,5 +1,5 @@
 import React from 'react'
-import { Navbar, HeroBanner, FooterBanner, Footer, Product } from '../componets'
+import { HeroBanner, FooterBanner, Product } from '../componets'
 import { client } from '../lib/client'
 
 const index = ({ products, bannerData }) => {
@@ -17,8 +17,7 @@ const index = ({ products, bannerData }) => {
         }
       </div>
 
-      <FooterBanner />
-      <Footer />
+      <FooterBanner footerBannerData={bannerData.length && bannerData[0]} />
     </>
   )
 }
