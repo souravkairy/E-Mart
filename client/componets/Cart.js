@@ -8,7 +8,7 @@ import { urlFor } from '../lib/client'
 
 const Cart = () => {
     const cartRef = useRef();
-    const { cartItem, totalPrice, totalQty, setShowCart } = useStateContext();
+    const { cartItem, totalPrice, totalQty, setShowCart, toggleCartItemQuanitity, onRemove, qty } = useStateContext();
 
     return (
         <div className='cart-wrapper' ref={cartRef}>
@@ -31,7 +31,7 @@ const Cart = () => {
                         </div>
                     )
                 }
-                <div className="product-container">
+                <div className="product-container" style={{ overflowY: "auto", height: "57vh" }}>
                     {
                         cartItem.length >= 1 && cartItem.map((item, index) => (
                             <div className='product' key={item._id}>
@@ -44,18 +44,18 @@ const Cart = () => {
                                     <div className='flex bottom'>
                                         <div>
                                             <p className="quantity-desc">
-                                                <span className='minus' onClick=''>
+                                                <span className='minus' onClick={() => toggleCartItemQuanitity(item._id, 'dec')}>
                                                     <AiOutlineMinus />
                                                 </span>
                                                 <span className='num'>
-                                                    0
+                                                    {item.quantity}
                                                 </span>
-                                                <span className='plus' onClick=''>
+                                                <span className='plus' onClick={() => toggleCartItemQuanitity(item._id, 'inc')}>
                                                     <AiOutlinePlus />
                                                 </span>
                                             </p>
                                         </div>
-                                        <button className='remove-item' type='button' onClick=''>
+                                        <button className='remove-item' type='button' onClick={() => onRemove(item)}>
                                             <TiDeleteOutline />
                                         </button>
                                     </div>
@@ -79,9 +79,7 @@ const Cart = () => {
                     )
                 }
 
-
             </div>
-
         </div>
     )
 }
