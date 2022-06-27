@@ -20,7 +20,6 @@ const Navbar = () => {
             {
                 showCart && <Cart />
             }
-
         </div>
     )
 }

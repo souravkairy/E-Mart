@@ -1,16 +1,43 @@
-import { createContext, useContext, useState } from 'react'
+import { createContext, useContext, useState, useEffect } from 'react'
 import toast, { Toast } from 'react-hot-toast'
 
 const Context = createContext()
 
 export const StateContext = ({ children }) => {
     const [showCart, setShowCart] = useState(false)
-    const [cartItem, setCartItem] = useState([])
-    const [totalPrice, setTotalPrice] = useState(0)
-    const [totalQty, setTotalQty] = useState(0)
+    const [cartItem, setCartItem] = useState(() => {
+        if (typeof window !== 'undefined') {
+            const localData = localStorage.getItem('cartItems');
+            return localData ? JSON.parse(localData) : [];
+        }
+    })
+    const [totalPrice, setTotalPrice] = useState(() => {
+        if (typeof window !== 'undefined') {
+            const localtotalPriceData = localStorage.getItem('totalPrice');
+            return localtotalPriceData ? JSON.parse(localtotalPriceData) : 0
+            return 0;
+        }
+    })
+    const [totalQty, setTotalQty] = useState(() => {
+        if (typeof window !== 'undefined') {
+            const localtotalQtyData = localStorage.getItem('totalQty');
+            return localtotalQtyData ? JSON.parse(localtotalQtyData) : 0
+            return 0;
+        }
+    })
     const [qty, setQty] = useState(1)
     let foundProduct;
     let index;
+
+    useEffect(() => {
+        localStorage.setItem('cartItems', JSON.stringify(cartItem))
+        localStorage.setItem('totalPrice', JSON.stringify(totalPrice))
+        localStorage.setItem('totalQty', JSON.stringify(totalQty))
+    }, [cartItem, totalPrice, totalQty])
+
+
+
+
 
     const onAdd = (product, quantity) => {
         const checkProductInCart = cartItem.find((item) => item._id === product._id)
@@ -26,6 +53,7 @@ export const StateContext = ({ children }) => {
                 }
             })
             setCartItem(updatedCartItems)
+
         }
         else {
             product.quantity = quantity
@@ -62,7 +90,6 @@ export const StateContext = ({ children }) => {
             setTotalPrice((prevTotalPrice) => prevTotalPrice + foundProduct.price)
             setQty(prevTotalQuantities => prevTotalQuantities + 1)
         } else if (value === 'dec') {
-            console.log(foundProduct);
             if (foundProduct.quantity > 1) {
                 setCartItem([...newCartItems, { ...foundProduct, quantity: foundProduct.quantity - 1 }]);
                 setTotalPrice((prevTotalPrice) => prevTotalPrice - foundProduct.price)
